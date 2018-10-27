@@ -35,6 +35,13 @@ export class RecipeService {
 
       ]),
     new Recipe(
+      'Spaghetti',
+      'My favorite food',
+      'https://upload.wikimedia.org/wikipedia/commons/2/2a/Spaghetti_al_Pomodoro.JPG',
+      [
+
+      ]),
+    new Recipe(
       'A Test Recipe 2',
       'This is a test like description 2',
       'https://cdn.pixabay.com/photo/2017/07/16/10/43/recipe-2508859_960_720.jpg',
@@ -64,6 +71,11 @@ export class RecipeService {
 
   updateRecipe(index: number, newRecipe: Recipe) {
     this.recipes[index] = newRecipe;
+    this.recipesChanged.next(this.recipes.slice());
+  }
+
+  deleteRecipe(index: number) {
+    this.recipes.splice(index, 1);
     this.recipesChanged.next(this.recipes.slice());
   }
 }
