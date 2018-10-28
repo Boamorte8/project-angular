@@ -5,7 +5,7 @@
     </div>
     <div class="collapse navbar-collapse">
     <!-- <div class="navbar-default"> -->
-      <ul class="nav navbar-nav">
+      <ul class="nav navbar-nav" *ngIf="authService.isAuthenticated()">
         <li routerLinkActive="active">
           <a routerLink="/recipes">Recipes</a>
         </li>
@@ -14,17 +14,22 @@
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li>
-          <a routerLink="/signup">Register</a>
+        <ng-template [ngIf]="!authService.isAuthenticated()">
+          <li routerLinkActive="active">
+            <a routerLink="/signup">Register</a>
+          </li>
+          <li routerLinkActive="active">
+            <a routerLink="/signin">Login</a>
+          </li>
+        </ng-template>
+        <li class="pointers" *ngIf="authService.isAuthenticated()">
+          <a (click)="onLogout()">Logout</a>
         </li>
-        <li>
-          <a routerLink="/signin">Login</a>
-        </li>
-        <li class="dropdown" appDropdown>
+        <li class="dropdown" appDropdown *ngIf="authService.isAuthenticated()">
           <a class="dropdown-toggle pointers" role="button">Manage <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a class="pointers" (click)="onSaveData()">Save Data</a></li>
-            <li><a class="pointers" (click)="onFetchData()">Fetch Data</a></li>
+            <li class="pointers"><a (click)="onSaveData()">Save Data</a></li>
+            <li class="pointers"><a (click)="onFetchData()">Fetch Data</a></li>
           </ul>
         </li>
       </ul>
