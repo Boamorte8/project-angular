@@ -1,8 +1,7 @@
 import { Recipe } from './../recipes/recipe.model';
 import { Injectable } from '@angular/core';
-import { throwError } from 'rxjs';
-import { Http, Response } from '@angular/http';
-import { map, catchError } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+import { HttpClient, HttpHeaders, HttpParams, HttpRequest } from '@angular/common/http';
 
 import { AuthService } from './../auth/auth.service';
 import { RecipeService } from './../recipes/recipe.service';
@@ -11,28 +10,37 @@ import { RecipeService } from './../recipes/recipe.service';
   providedIn: 'root'
 })
 export class DataStorageService {
-  private DB_RECIPES_URL = 'https://ng-recipe-book-2914a.firebaseio.com/Recipes.json?auth=';
+  private DB_RECIPES_URL = 'https://ng-recipe-book-2914a.firebaseio.com/Recipes.json';
 
-  constructor(private http: Http, private recipeService: RecipeService,
+  constructor(private http: HttpClient, private recipeService: RecipeService,
               private authService: AuthService) { }
 
   storeRecipes() {
-    const token = this.authService.getToken();
-    return this.http.put(this.DB_RECIPES_URL + token, this.recipeService.getRecipes())
-      .pipe(map(
-        (response: Response) => {
-          return response;
-        }
-      )).pipe(catchError(error => {
-        return throwError('Something went wrong :(');
-      }));
+    // const token = this.authService.getToken();
+    // const headers = new HttpHeaders().set('Authorization', 'Bearer adsfaidofaf');
+    // return this.http.put(this.DB_RECIPES_URL, this.recipeService.getRecipes(), {
+    //   observe: 'events',
+    //   params: new HttpParams().set('auth', token)
+    //   // headers: headers
+    // });
+    // const req = new HttpRequest('PUT', this.DB_RECIPES_URL,
+    //                             this.recipeService.getRecipes(), {
+    //                               reportProgress: true,
+    //                               params: new HttpParams().set('auth', token)
+                                // });
+    const req = new HttpRequest('PUT', this.DB_RECIPES_URL,
+                                this.recipeService.getRecipes(), {
+                                  reportProgress: true
+                                });
+    return this.http.request(req);
   }
 
   getRecipes() {
     const token = this.authService.getToken();
-    this.http.get(this.DB_RECIPES_URL + token).pipe(
-      map((response: Response) => {
-        const recipes: Recipe[] = response.json();
+    this.http.get<Recipe[]>(this.DB_RECIPES_URL, {
+      // params: new HttpParams().set('auth', token)
+    }).pipe(
+      map((recipes) => {
         for (const recipe of recipes) {
           if (!recipe['ingredients']) {
             console.log(recipe);
