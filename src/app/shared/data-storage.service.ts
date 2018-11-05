@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpParams, HttpRequest } from '@angular/common/http';
 
-import { AuthService } from './../auth/auth.service';
 import { RecipeService } from './../recipes/recipe.service';
 
 @Injectable({
@@ -12,8 +11,7 @@ import { RecipeService } from './../recipes/recipe.service';
 export class DataStorageService {
   private DB_RECIPES_URL = 'https://ng-recipe-book-2914a.firebaseio.com/Recipes.json';
 
-  constructor(private http: HttpClient, private recipeService: RecipeService,
-              private authService: AuthService) { }
+  constructor(private http: HttpClient, private recipeService: RecipeService) { }
 
   storeRecipes() {
     // const token = this.authService.getToken();
@@ -36,7 +34,6 @@ export class DataStorageService {
   }
 
   getRecipes() {
-    const token = this.authService.getToken();
     this.http.get<Recipe[]>(this.DB_RECIPES_URL, {
       // params: new HttpParams().set('auth', token)
     }).pipe(
